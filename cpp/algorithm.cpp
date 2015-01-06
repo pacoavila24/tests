@@ -1,35 +1,56 @@
 ////////////////////Primer ejercicio/////////////////////////////
 Describe un algoritmo para poder realizar una busqueda basica en un b-tree
-#include <iostream>
-#include <cstdlib>
 
-struct Node {
-   // Este es el consturctor, inicializa el Node
-   Node(int d): data(d), left(NULL), right(NULL) {} 
-   int data;
-   Node* left;
-   Node* right;
+class ArbolABB {
+  private:
+   //// Clase local de Lista para Nodo de ArbolBinario:
+   class Nodo {
+     public:
+      // Constructor:
+      Nodo(const int dat, Nodo *izq=NULL, Nodo *der=NULL) :
+        dato(dat), izquierdo(izq), derecho(der) {}
+      // Miembros:
+      int dato;
+      Nodo *izquierdo;
+      Nodo *derecho;
+   };
+
+   // Punteros de la lista, para cabeza y nodo actual:
+   Nodo *raíz;
+   Nodo *actual;
+   int contador;
+   int altura;
+
+  public:
+   // Constructor y destructor básicos:
+   ArbolABB() : raíz(NULL), actual(NULL) {}
+   ~ArbolABB() { Podar(raíz); }
+   // Insertar en árbol ordenado:
+   void Insertar(const int dat);
+   // Borrar un elemento del árbol:
+   void Borrar(const int dat);
+   // Función de búsqueda:
+   bool Buscar(const int dat);
+   // Comprobar si el árbol está vacío:
+   bool Vacio(Nodo *r) { return r==NULL; }
+   // Comprobar si es un nodo hoja:
+   bool EsHoja(Nodo *r) { return !r->derecho && !r->izquierdo; }
+   // Contar número de nodos:
+   const int NumeroNodos();
+   const int AlturaArbol();
+   // Calcular altura de un int:
+   int Altura(const int dat);
+   // Devolver referencia al int del nodo actual:
+   int &ValorActual() { return actual->dato; }
+   // Moverse al nodo raíz:
+   void Raiz() { actual = raíz; }
+   // Aplicar una función a cada elemento del árbol:
+   void InOrden(void (*func)(int&) , Nodo *nodo=NULL, bool r=true);
+   void PreOrden(void (*func)(int&) , Nodo *nodo=NULL, bool r=true);
+   void PostOrden(void (*func)(int&) , Nodo *nodo=NULL, bool r=true);
+  private:
+   // Funciones auxiliares
+   void Podar(Nodo* &);
+   void auxContador(Nodo*);
+   void auxAltura(Nodo*, int);
 };
-
-int main() {
-   // raiz es la raíz del árbol
-   Node* raiz = new Node(5);
-   raiz->left = new Node(3);
-   raiz->left->left = new Node(1);
-   raiz->left->right = new Node(4);
-   raiz->right = new Node(7);
-   raiz->right->right = new Node(9);
-   system("PAUSE");
-}
-
-// funcion que inserta en el b-tree
-Node* insert( Node* &branch, Node* new) {
-   if ( ! branch ) 
-      branch = new;
-   else if ( new->data < branch->data )
-      insert( branch->left, new ); 
-   else if ( new->data > branch->data )
-      insert( branch->right, new );
-   else
-      assert( false );
-}
